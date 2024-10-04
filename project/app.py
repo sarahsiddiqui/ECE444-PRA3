@@ -48,16 +48,16 @@ def index():
     return render_template("index.html", entries=entries)
 
 
-# @app.route("/add", methods=["POST"])
-# def add_entry():
-#     """Adds new post to the database."""
-#     if not session.get("logged_in"):
-#         abort(401)
-#     new_entry = models.Post(request.form["title"], request.form["text"])
-#     db.session.add(new_entry)
-#     db.session.commit()
-#     flash("New entry was successfully posted")
-#     return redirect(url_for("index"))
+@app.route("/add", methods=["POST"])
+def add_entry():
+    """Adds new post to the database."""
+    if not session.get("logged_in"):
+        abort(401)
+    new_entry = models.Post(request.form["title"], request.form["text"])
+    db.session.add(new_entry)
+    db.session.commit()
+    flash("New entry was successfully posted")
+    return redirect(url_for("index"))
 
 
 @app.route("/login", methods=["GET", "POST"])
