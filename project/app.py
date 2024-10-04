@@ -1,14 +1,13 @@
-import os
 import sqlite3
 from pathlib import Path
-
+from functools import wraps
 from flask import Flask, g, render_template, request, session, \
                   flash, redirect, url_for, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from functools import wraps
+import os
+
 
 basedir = Path(__file__).resolve().parent
-
 
 # configuration
 DATABASE = "flaskr.db"
@@ -18,7 +17,7 @@ if url.startswith("postgres://"):
 USERNAME = "admin"
 PASSWORD = "admin"
 SECRET_KEY = "change_me"
-SQLALCHEMY_DATABASE_URI = url
+SQLALCHEMY_DATABASE_URI = f'sqlite:///{Path(basedir).joinpath(DATABASE)}'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
@@ -75,12 +74,14 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 @app.route('/logout')
 def logout():
     """User logout/authentication/session management."""
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('index'))
+
 
 @app.route('/delete/<int:post_id>', methods=['GET'])
 @login_required
@@ -103,6 +104,7 @@ def search():
     if query:
         return render_template('search.html', entries=entries, query=query)
     return render_template('search.html')
+
 
 if __name__ == "__main__":
     app.run()
